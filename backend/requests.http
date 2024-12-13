@@ -1,0 +1,22 @@
+GET http://localhost:3000/telemetry/1
+
+### Post a new telemetry
+POST http://localhost:3000/telemetry
+Content-Type: application/json
+
+{
+  "altitude": 12000,
+  "velocity": 400,
+  "fuelLevel": 0.7,
+  "launchId": 1
+}
+
+###Ensure a valid Launch record exists in the database:
+POST http://localhost:3000/launches
+Content-Type: application/json
+
+{
+  "name": "Test Launch",
+  "startTime": "2024-12-12T10:00:00.000Z",
+  "status": "IN_PROGRESS"
+}

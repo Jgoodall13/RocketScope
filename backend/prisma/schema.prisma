@@ -12,3 +12,32 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model TelemetryData {
+  id        Int      @id @default(autoincrement())
+  altitude  Float
+  velocity  Float
+  fuelLevel Float
+  timestamp DateTime @default(now())
+  launchId  Int
+  Launch    Launch   @relation(fields: [launchId], references: [id])
+}
+
+model Launch {
+  id          Int            @id @default(autoincrement())
+  name        String
+  startTime   DateTime
+  telemetry   TelemetryData[]
+  abortReason String?        // Null if no abort occurred
+  status      String         // e.g., "In Progress", "Completed", "Aborted"
+
+  AbortLog AbortLog[]
+}
+
+model AbortLog {
+  id        Int      @id @default(autoincrement())
+  reason    String
+  timestamp DateTime @default(now())
+  launchId  Int
+  Launch    Launch   @relation(fields: [launchId], references: [id])
+}
