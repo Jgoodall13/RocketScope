@@ -12,6 +12,8 @@ export class TelemetryController {
       altitude: number;
       velocity: number;
       fuelLevel: number;
+      latitude: number;
+      longitude: number;
       launchId: number;
     },
   ) {

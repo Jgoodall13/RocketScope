@@ -1,22 +1,39 @@
-GET http://localhost:3000/telemetry/1
+### Get Telemetry by Launch ID
+GET http://localhost:3000/telemetry/3
 
-### Post a new telemetry
+### Post a New Telemetry Record
 POST http://localhost:3000/telemetry
 Content-Type: application/json
 
 {
-  "altitude": 12000,
-  "velocity": 400,
-  "fuelLevel": 0.7,
-  "launchId": 1
+  "altitude": 15000,
+  "velocity": 500,
+  "fuelLevel": 0.8,
+  "latitude": 37.7749,
+  "longitude": -122.4194,
+  "launchId": 3
 }
 
-###Ensure a valid Launch record exists in the database:
+### Ensure a Valid Launch Record Exists
 POST http://localhost:3000/launches
 Content-Type: application/json
 
 {
   "name": "Test Launch",
   "startTime": "2024-12-12T10:00:00.000Z",
-  "status": "IN_PROGRESS"
+  "status": "In Progress"
 }
+
+### Start Launch
+PATCH http://localhost:3000/launches/3/start
+
+### Abort Launch
+PATCH http://localhost:3000/launches/3/abort
+Content-Type: application/json
+
+{
+  "reason": "Manual override from Jacob"
+}
+
+### Get Launch by ID
+GET http://localhost:3000/launches/3

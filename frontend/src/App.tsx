@@ -1,25 +1,20 @@
-import "./App.css";
-import { useEffect, useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import DashboardPage from "./pages/DashboardPage";
+import SimulationPage from "./pages/SimulationPage";
+import LogsPage from "./pages/LogsPage";
+import Layout from "./components/Layout";
 
 function App() {
-  const [data, setData] = useState<any>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch("http://localhost:3000");
-      const data = await response.json();
-      setData(data);
-    };
-    console.log(data);
-    fetchData();
-  }, []);
   return (
-    <>
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
-      <h1 className="text-3xl font-bold underline">
-        Backend says...: {data?.message}
-      </h1>
-    </>
+    <Router>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<DashboardPage />} />
+          <Route path="/simulation" element={<SimulationPage />} />
+          <Route path="/logs" element={<LogsPage />} />
+        </Routes>
+      </Layout>
+    </Router>
   );
 }
 

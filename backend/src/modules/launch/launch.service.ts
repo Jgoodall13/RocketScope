@@ -1,9 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { TelemetryGateway } from 'src/modules/telemetry/telemetry.gateway';
 
 @Injectable()
 export class LaunchService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private gateway: TelemetryGateway,
+  ) {}
 
   async createLaunch(data: { name: string; startTime: Date; status: string }) {
     return this.prisma.launch.create({
@@ -15,13 +19,41 @@ export class LaunchService {
     return this.prisma.launch.findMany();
   }
 
+  async getLaunchById(id: number) {
+    const launch = await this.prisma.launch.findUnique({ where: { id } });
+    if (!launch) {
+      throw new NotFoundException(`Launch with ID ${id} not found.`);
+    }
+    return launch;
+  }
+
   async updateLaunch(
     id: number,
     data: { status?: string; abortReason?: string },
   ) {
-    return this.prisma.launch.update({
+    const launch = await this.prisma.launch.update({
       where: { id },
       data,
     });
+    this.gateway.sendLaunchUpdate(launch); // Emit event
+    return launch;
+  }
+
+  async updateLaunchStatus(id: number, status: string, abortReason?: string) {
+    const launch = await this.prisma.launch.findUnique({ where: { id } });
+
+    if (!launch) {
+      throw new NotFoundException(`Launch with ID ${id} not found.`);
+    }
+
+    const updatedLaunch = await this.prisma.launch.update({
+      where: { id },
+      data: {
+        status,
+        abortReason: abortReason || null,
+      },
+    });
+    this.gateway.sendLaunchUpdate(updatedLaunch); // Emit event
+    return updatedLaunch;
   }
 }

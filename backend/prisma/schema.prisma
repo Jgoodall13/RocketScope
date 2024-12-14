@@ -18,10 +18,13 @@ model TelemetryData {
   altitude  Float
   velocity  Float
   fuelLevel Float
+  latitude  Float    @default(0)
+  longitude Float    @default(0)
   timestamp DateTime @default(now())
   launchId  Int
   Launch    Launch   @relation(fields: [launchId], references: [id])
 }
+
 
 model Launch {
   id          Int            @id @default(autoincrement())

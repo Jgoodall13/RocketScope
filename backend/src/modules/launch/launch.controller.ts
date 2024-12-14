@@ -17,11 +17,22 @@ export class LaunchController {
     return this.launchService.getAllLaunches();
   }
 
-  @Patch(':id')
-  async updateLaunch(
-    @Param('id') id: string,
-    @Body() body: { status?: string; abortReason?: string },
-  ) {
-    return this.launchService.updateLaunch(Number(id), body);
+  @Get(':id')
+  async getLaunchById(@Param('id') id: string) {
+    return this.launchService.getLaunchById(Number(id));
+  }
+
+  @Patch(':id/start')
+  async startLaunch(@Param('id') id: string) {
+    return this.launchService.updateLaunchStatus(Number(id), 'In Progress');
+  }
+
+  @Patch(':id/abort')
+  async abortLaunch(@Param('id') id: string, @Body() body: { reason: string }) {
+    return this.launchService.updateLaunchStatus(
+      Number(id),
+      'Aborted',
+      body.reason,
+    );
   }
 }
