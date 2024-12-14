@@ -10,9 +10,7 @@ export class LaunchService {
   ) {}
 
   async createLaunch(data: { name: string; startTime: Date; status: string }) {
-    return this.prisma.launch.create({
-      data,
-    });
+    return this.prisma.launch.create({ data });
   }
 
   async getAllLaunches() {
@@ -20,6 +18,9 @@ export class LaunchService {
   }
 
   async getLaunchById(id: number) {
+    if (!id) {
+      throw new NotFoundException(`Launch ID must be provided.`);
+    }
     const launch = await this.prisma.launch.findUnique({ where: { id } });
     if (!launch) {
       throw new NotFoundException(`Launch with ID ${id} not found.`);
@@ -40,6 +41,9 @@ export class LaunchService {
   }
 
   async updateLaunchStatus(id: number, status: string, abortReason?: string) {
+    if (!id) {
+      throw new NotFoundException(`Launch ID must be provided.`);
+    }
     const launch = await this.prisma.launch.findUnique({ where: { id } });
 
     if (!launch) {
@@ -55,5 +59,19 @@ export class LaunchService {
     });
     this.gateway.sendLaunchUpdate(updatedLaunch); // Emit event
     return updatedLaunch;
+  }
+
+  async getAbortedLaunches() {
+    return this.prisma.launch.findMany({
+      where: {
+        status: 'Aborted',
+      },
+      select: {
+        id: true,
+        name: true,
+        startTime: true,
+        abortReason: true,
+      },
+    });
   }
 }

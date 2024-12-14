@@ -17,6 +17,11 @@ export class LaunchController {
     return this.launchService.getAllLaunches();
   }
 
+  @Get('aborted') // This should only fetch aborted launches
+  async getAbortedLaunches() {
+    return this.launchService.getAbortedLaunches();
+  }
+
   @Get(':id')
   async getLaunchById(@Param('id') id: string) {
     return this.launchService.getLaunchById(Number(id));

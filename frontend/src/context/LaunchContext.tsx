@@ -9,7 +9,7 @@ interface Launch {
   abortReason?: string | null;
 }
 
-interface TelemetryData {
+interface Telemetry {
   id: number;
   altitude: number;
   velocity: number;
@@ -21,11 +21,11 @@ interface TelemetryData {
 
 interface LaunchContextType {
   launchId: number | null;
-  setLaunchId: (id: number | null) => void;
+  setLaunchId: (id: number) => void;
   launchData: Launch | null;
   setLaunchData: (data: Launch | null) => void;
-  telemetryData: TelemetryData[];
-  setTelemetryData: (data: TelemetryData[]) => void;
+  telemetryData: Telemetry[];
+  setTelemetryData: React.Dispatch<React.SetStateAction<Telemetry[]>>;
   refreshLaunchData: () => void;
 }
 
@@ -34,7 +34,7 @@ const LaunchContext = createContext<LaunchContextType | undefined>(undefined);
 export const LaunchProvider = ({ children }: { children: React.ReactNode }) => {
   const [launchId, setLaunchId] = useState<number | null>(null);
   const [launchData, setLaunchData] = useState<Launch | null>(null);
-  const [telemetryData, setTelemetryData] = useState<TelemetryData[]>([]);
+  const [telemetryData, setTelemetryData] = useState<Telemetry[]>([]);
 
   const refreshLaunchData = async () => {
     if (!launchId) return;
@@ -43,6 +43,7 @@ export const LaunchProvider = ({ children }: { children: React.ReactNode }) => {
       setLaunchData(response.data);
     } catch (error) {
       console.error("Error fetching launch data:", error);
+      alert("Failed to fetch launch data. Please try again later.");
     }
   };
 
@@ -67,7 +68,7 @@ export const LaunchProvider = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export const useLaunchContext = (): LaunchContextType => {
+export const useLaunchContext = () => {
   const context = useContext(LaunchContext);
   if (!context) {
     throw new Error("useLaunchContext must be used within a LaunchProvider");

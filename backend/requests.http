@@ -1,5 +1,5 @@
 ### Get Telemetry by Launch ID
-GET http://localhost:3000/telemetry/3
+GET http://localhost:3000/telemetry/1
 
 ### Post a New Telemetry Record
 POST http://localhost:3000/telemetry
@@ -9,9 +9,9 @@ Content-Type: application/json
   "altitude": 15000,
   "velocity": 500,
   "fuelLevel": 0.8,
-  "latitude": 37.7749,
-  "longitude": -122.4194,
-  "launchId": 3
+  "latitude": 13.7749,
+  "longitude": -69.4194,
+  "launchId": 1
 }
 
 ### Ensure a Valid Launch Record Exists
@@ -25,10 +25,10 @@ Content-Type: application/json
 }
 
 ### Start Launch
-PATCH http://localhost:3000/launches/3/start
+PATCH http://localhost:3000/launches/1/start
 
 ### Abort Launch
-PATCH http://localhost:3000/launches/3/abort
+PATCH http://localhost:3000/launches/1/abort
 Content-Type: application/json
 
 {
@@ -36,4 +36,8 @@ Content-Type: application/json
 }
 
 ### Get Launch by ID
-GET http://localhost:3000/launches/3
+GET http://localhost:3000/launches/1
+
+
+### Get Aborted Launches
+GET http://localhost:3000/launches/aborted

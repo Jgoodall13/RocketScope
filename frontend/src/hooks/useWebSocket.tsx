@@ -6,24 +6,7 @@ const useWebSocket = (
   onLaunchUpdate: (data: any) => void
 ) => {
   useEffect(() => {
-    const socket = io("http://localhost:3000", {
-      transports: ["websocket"],
-      reconnection: true, // Automatically try to reconnect
-      reconnectionAttempts: 10, // Retry up to 10 times
-      timeout: 5000, // Wait 5 seconds for the connection to establish
-    });
-
-    socket.on("connect", () => {
-      console.log("WebSocket connected!");
-    });
-
-    socket.on("disconnect", (reason) => {
-      console.warn("WebSocket disconnected:", reason);
-    });
-
-    socket.on("connect_error", (error) => {
-      console.error("WebSocket connection error:", error);
-    });
+    const socket = io("http://localhost:3000", { transports: ["websocket"] });
 
     socket.on("telemetry-update", (data) => {
       console.log("Real-time Telemetry Update:", data);
@@ -35,8 +18,13 @@ const useWebSocket = (
       onLaunchUpdate(data);
     });
 
+    socket.on("disconnect", (reason) => {
+      console.warn(`WebSocket disconnected: ${reason}`);
+    });
+
     return () => {
       socket.disconnect();
+      console.log("WebSocket connection closed.");
     };
   }, [onTelemetryUpdate, onLaunchUpdate]);
 };
